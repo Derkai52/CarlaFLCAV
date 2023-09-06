@@ -180,7 +180,8 @@ class ActorFactory(object):
                 carla_actor = self.world.spawn_actor(bp, transform)
                 other_vehicle_object = OtherVehicle(uid=self.generate_uid(),
                                                     name='',
-                                                    base_save_dir="/tmp",
+                                                    # base_save_dir="/tmp",
+                                                    base_save_dir=self.base_save_dir,    # TODO: Setting other vehicle data save path
                                                     carla_actor=carla_actor)
                 other_vehicle_node = Node(other_vehicle_object, NodeType.OTHER_VEHICLE)
                 other_vehicle_nodes.append(other_vehicle_node)
@@ -201,7 +202,8 @@ class ActorFactory(object):
 
                 other_vehicle_object = OtherVehicle(uid=self.generate_uid(),
                                                     name='',
-                                                    base_save_dir="/tmp",
+                                                    # base_save_dir="/tmp",
+                                                    base_save_dir=self.base_save_dir,    # TODO: Setting other vehicle data save path
                                                     carla_actor=carla_actor)
                 other_vehicle_node = Node(other_vehicle_object, NodeType.OTHER_VEHICLE)
                 other_vehicle_nodes.append(other_vehicle_node)

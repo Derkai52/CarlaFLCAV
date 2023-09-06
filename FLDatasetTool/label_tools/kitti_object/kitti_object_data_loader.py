@@ -23,7 +23,7 @@ def load_lidar_data(path: str):
                                Rotation(yaw=float(row['yaw']),
                                         roll=float(row['roll']),
                                         pitch=float(row['pitch'])))
-        lidar_rawdata_df = lidar_rawdata_df.append({'frame': frame,
+        lidar_rawdata_df = lidar_rawdata_df._append({'frame': frame,
                                                     'lidar_rawdata_path': lidar_rawdata_path,
                                                     'lidar_pose': lidar_pose},
                                                    ignore_index=True)
@@ -47,7 +47,7 @@ def load_camera_data(path: str):
                                 Rotation(yaw=float(row['yaw']),
                                          roll=float(row['roll']),
                                          pitch=float(row['pitch'])))
-        camera_rawdata_df = camera_rawdata_df.append({'frame': frame,
+        camera_rawdata_df = camera_rawdata_df._append({'frame': frame,
                                                       'camera_pose': camera_pose,
                                                       'camera_matrix': camera_matrix,
                                                       'camera_rawdata_path': camera_rawdata_path},
@@ -64,7 +64,7 @@ def load_object_labels(path: str):
     object_labels_df = pd.DataFrame(columns=['frame', 'object_labels_path'])
     for objects_labels_rawdata_path in object_labels_path_list:
         frame = get_frame_from_fullpath(objects_labels_rawdata_path)
-        object_labels_df = object_labels_df.append({'frame': frame,
+        object_labels_df = object_labels_df._append({'frame': frame,
                                                     'object_labels_path': objects_labels_rawdata_path},
                                                    ignore_index=True)
     return object_labels_df

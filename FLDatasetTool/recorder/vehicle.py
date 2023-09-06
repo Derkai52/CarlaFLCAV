@@ -28,6 +28,51 @@ class OtherVehicle(Actor):
 
     def save_to_disk(self, frame_id, timestamp, debug=False):
         # Other vehicle not saving data
+        # print(self.get_acceleration().to_dict(prefix='a'))
+        # print(self.get_acceleration().to_dict(prefix='a'))
+        # TODO: 其他车存储数据
+        os.makedirs(self.save_dir, exist_ok=True)
+        fieldnames = ['vehicle',
+                      'frame',
+                      'timestamp',
+                      'x', 'y', 'z',
+                      'roll', 'pitch', 'yaw',
+                      'speed',
+                      'vx', 'vy', 'vz',
+                      'ax', 'ay', 'az',
+                      'throttle', 'brake',
+                      'steer', 'reverse', 'gear']
+
+        if self.first_tick:
+            self.save_vehicle_info()
+            with open('{}/other_vehicles_status.csv'.format(self.save_dir), 'w', encoding='utf-8') as csv_file:
+            # with open('/home/qf/other_vehicles_status.csv', 'w', encoding='utf-8') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                if self.first_tick:
+                    writer.writeheader()
+                    self.first_tick = False
+
+        # Save vehicle status to csv file
+        # frame_id x, y, z, roll, pitch, yaw, speed, acceleration
+
+
+        with open('{}/other_vehicles_status.csv'.format(self.save_dir), 'a', encoding='utf-8') as csv_file:
+        # with open('/home/qf/other_vehicles_status.csv', 'a', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            csv_line = {'vehicle': self.carla_actor.id,
+                        'frame': frame_id,
+                        'timestamp': timestamp,
+                        'speed': self.get_speed()}
+            csv_line.update(self.get_acceleration().to_dict(prefix='a'))
+            csv_line.update(self.get_velocity().to_dict(prefix='v'))
+            csv_line.update(self.get_transform().to_dict())
+            
+            writer.writerow(csv_line)
+
+
+        if debug:
+            print("\tOther_Vehicles status recorded: uid={} name={}".format(self.uid, self.name))
+
         return
 
     def get_save_dir(self):
@@ -42,6 +87,9 @@ class OtherVehicle(Actor):
         # else:
         #     return
 
+    def save_vehicle_info(self):
+        # TODO: Save vehicle physics info here
+        pass
 
 class Vehicle(Actor):
     def __init__(self,
