@@ -37,7 +37,7 @@ https://user-images.githubusercontent.com/38368612/206345017-5c8a764a-44fb-4282-
 
 - Ubuntu 20.04
 - Python 3.8
-- CARLA 0.9.13
+- CARLA 0.9.12
 - CUDA 11.3 (Nvidia Driver 470)
 - Pytorch 1.10.0
 
