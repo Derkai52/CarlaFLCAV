@@ -18,7 +18,7 @@
     },
     "weather":
     {
-        "dynamic_weatherd": 1,
+        "dynamic_weather": 1,
         "sun_altitude_angle": 15,
         "cloudiness": 0,
         "precipitation": 0,

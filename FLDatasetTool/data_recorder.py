@@ -58,19 +58,24 @@ class DataRecorder:
             settings.synchronous_mode = True
 
             # Initialize the weather
-            weather = self.world.get_weather()
-            # weather.precipitation_deposits = 80
-            # weather.precipitation = 80
-            # weather.cloudiness = 80.0
-            # weather.sun_altitude_angle = -30
-            self.world.set_weather(weather)
-
+            weather_settings = json_settings["weather"]
+            self.dynamic_weather = weather_settings["dynamic_weather"]
             if self.dynamic_weather:
                 from utils.dynamic_weather import Weather
                 w = self.world.get_weather()
-                w.precipitation = 80
                 weather = Weather(w)
                 self.weather = weather
+            else:
+                weather = self.world.get_weather()
+                weather.sun_altitude_angle = weather_settings["sun_altitude_angle"]
+                weather.cloudiness = weather_settings["cloudiness"]
+                weather.precipitation = weather_settings["precipitation"]
+                weather.precipitation_deposits = weather_settings["precipitation_deposits"]
+                weather.wind_intensity = weather_settings["wind_intensity"]
+                weather.fog_density = weather_settings["fog_density"]
+                weather.fog_falloff = weather_settings["fog_falloff"]
+                weather.wetness = weather_settings["wetness"]
+                self.world.set_weather(weather)
 
             if json_settings["spectator_pose"] is not None:
                 pose = json_settings["spectator_pose"]
