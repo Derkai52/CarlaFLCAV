@@ -34,6 +34,7 @@ class DataRecorder:
         self.actor_tree = ActorTree(self.world)
         self.frame_total = -1
         self.frame_step = 1
+        self.dynamic_weather = False
 
     def _get_world(self) -> carla.World:
         return self.carla_client.get_world()
@@ -55,6 +56,21 @@ class DataRecorder:
             self.carla_client.load_world(json_settings["map"])
             settings = self.world.get_settings()
             settings.synchronous_mode = True
+
+            # Initialize the weather
+            weather = self.world.get_weather()
+            # weather.precipitation_deposits = 80
+            # weather.precipitation = 80
+            # weather.cloudiness = 80.0
+            # weather.sun_altitude_angle = -30
+            self.world.set_weather(weather)
+
+            if self.dynamic_weather:
+                from dynamic_weather import Weather
+                w = self.world.get_weather()
+                w.precipitation = 80
+                weather = Weather(w)
+                self.weather = weather
 
             if json_settings["spectator_pose"] is not None:
                 pose = json_settings["spectator_pose"]
@@ -105,6 +121,10 @@ class DataRecorder:
                 print("World Tick -> FrameID: {} Timestamp: {} Cost: {:.3f}s".format(frame_id,
                                                                                      timestamp,
                                                                                      time.time()-tick_s))
+                # Tick Dynamic Weather
+                if self.dynamic_weather:
+                    self.weather.tick(1)
+                    self.world.set_weather(self.weather.weather)
                 # Save data to disk
                 if total_frame_count % self.frame_step == 0:
                     save_s = time.time()
