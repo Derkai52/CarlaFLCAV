@@ -66,7 +66,7 @@ class DataRecorder:
             self.world.set_weather(weather)
 
             if self.dynamic_weather:
-                from dynamic_weather import Weather
+                from utils.dynamic_weather import Weather
                 w = self.world.get_weather()
                 w.precipitation = 80
                 weather = Weather(w)
