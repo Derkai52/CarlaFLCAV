@@ -27,6 +27,7 @@ class DataRecorder:
         self.carla_client.set_timeout(10.0)
         self.world = self._get_world()
         self.tm = self.carla_client.get_trafficmanager()
+        self.tm.global_percentage_speed_difference(80.0) # TODO: global speed limit
         self.debug_helper = self.world.debug
         self.record_name = None
         self.base_save_dir = None
