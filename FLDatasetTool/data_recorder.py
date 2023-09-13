@@ -27,7 +27,6 @@ class DataRecorder:
         self.carla_client.set_timeout(10.0)
         self.world = self._get_world()
         self.tm = self.carla_client.get_trafficmanager()
-        self.tm.global_percentage_speed_difference(80.0) # TODO: global speed limit
         self.debug_helper = self.world.debug
         self.record_name = None
         self.base_save_dir = None
@@ -57,6 +56,9 @@ class DataRecorder:
             self.carla_client.load_world(json_settings["map"])
             settings = self.world.get_settings()
             settings.synchronous_mode = True
+
+            # Initialize the triffic speed limit
+            self.tm.global_percentage_speed_difference(json_settings["speed_limit"]["global_percentage_speed_difference"]) # TODO: global speed limit
 
             # Initialize the weather
             weather_settings = json_settings["weather"]

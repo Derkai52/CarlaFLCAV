@@ -28,5 +28,9 @@
         "fog_distance": 0,
         "fog_falloff": 0,
         "wetness": 0
+    },
+    "speed_limit":
+    {
+        "global_percentage_speed_difference": 0.0
     }
 }

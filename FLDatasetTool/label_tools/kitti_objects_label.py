@@ -4,6 +4,7 @@ import math
 import pickle
 import sys
 import time
+import shutil
 from multiprocessing.pool import Pool as ThreadPool
 from pathlib import Path
 
@@ -31,6 +32,31 @@ def gather_rawdata_to_dataframe(record_name: str, vehicle_name: str, lidar_path:
     rawdata_frames_df = pd.merge(rawdata_frames_df, camera_rawdata_path_df, how='outer', on='frame')
 
     return rawdata_frames_df
+
+
+def generate_vehicle_status(record_name: str, path_to_kitti_object: str, vehicle_type: str):
+    if vehicle_type == "master":
+        file_name = "/vehicle_status.csv"
+    elif vehicle_type == "other":
+        file_name = "/other_vehicles_status.csv"
+    else:
+        print("Undefind vehicle type: ", vehicle_type)
+        return False
+
+    source_file = f"{RAW_DATA_PATH}/{record_name}/{path_to_kitti_object}/{file_name}"
+    target_path = f"{DATASET_PATH}/{record_name}/vehicle_status/{path_to_kitti_object}"
+    target_file = target_path + file_name
+    vehicle_save_path = Path(target_path)
+    vehicle_save_path.mkdir(parents=True, exist_ok=True)
+    # print(vehicle_save_path)
+    # print(source_file)
+    # print(target_file)
+    try:
+        shutil.copy(source_file, target_file)
+    except IOError as e:
+        print("Unable to copy other vehicle file ", e)
+        return False
+    return True
 
 
 def generate_image_sets(path_to_kitti_object: str):
@@ -235,7 +261,16 @@ def main():
     else:
         vehicle_name_list = [args.vehicle]
 
+    # Fliter Master and Other Vehicle
+    master_vehicle = []
+    other_vehicle = []
     for vehicle_name in vehicle_name_list:
+        if "tesla.model3.master" in vehicle_name:
+            master_vehicle.append(vehicle_name)
+        else:
+            other_vehicle.append(vehicle_name)
+
+    for vehicle_name in master_vehicle:
         rawdata_df = gather_rawdata_to_dataframe(args.record,
                                                  vehicle_name,
                                                  args.lidar,
@@ -243,7 +278,10 @@ def main():
         print("Process {} - {}".format(record_name, vehicle_name))
         kitti_obj_label_tool = KittiObjectLabelTool(record_name, vehicle_name, rawdata_df, args.output_dir)
         kitti_obj_label_tool.process()
+        generate_vehicle_status(record_name, vehicle_name, "master")
 
+    for vehicle_name in other_vehicle:
+        generate_vehicle_status(record_name, vehicle_name, "other")
 
 if __name__ == '__main__':
     main()
